@@ -6,9 +6,7 @@
     android:viewportWidth="0"
     android:viewportHeight="0">
 
-    <solid android:color="@color/g1dark" />
-    <stroke android:color="@color/g1" android:width="0dp"/>
-
-    <corners android:radius="20dp"/>
+    <solid android:color="@color/blu1" />
+    <corners android:radius="15dp"/>
 
 </shape>

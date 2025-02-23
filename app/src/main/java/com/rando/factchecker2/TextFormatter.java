@@ -17,22 +17,30 @@ import java.util.regex.Pattern;
 public class TextFormatter {
 
     public static void formatText(String text, TextView textView) {
-        StringBuffer modifiedText = new StringBuffer();
-        Pattern boldPattern = Pattern.compile("\\*\\*(.*?)\\*\\*"); // Non-greedy matching
-        Matcher matcher = boldPattern.matcher(text);
         List<Integer> startPositions = new ArrayList<>();
         List<Integer> endPositions = new ArrayList<>();
-        while (matcher.find()) {
-            String matchedText = matcher.group(1);
-            int start = matcher.start(1);
-            int end = matcher.end(1);
-            startPositions.add(start);
-            endPositions.add(end);
+        StringBuilder formattedText = new StringBuilder();
+        int currentIndex = 0;
 
-            matcher.appendReplacement(modifiedText, matchedText);
+        Pattern pattern = Pattern.compile("\\*\\*(.*?)\\*\\*"); // Matches text between asterisks
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            // Append the text before the matched pattern
+            formattedText.append(text.substring(currentIndex, matcher.start()));
+
+            // Store the start and end positions (relative to the *content*)
+            startPositions.add(formattedText.length()); // Start position of the content
+            formattedText.append(matcher.group(1));  // Append the content without *
+            endPositions.add(formattedText.length()); // End position of the content
+
+            currentIndex = matcher.end(); // Move the current index to the end of the match
         }
-        matcher.appendTail(modifiedText);
-        SpannableString spannableString = new SpannableString(modifiedText.toString());
+
+
+        // Append any remaining text after the last match
+        formattedText.append(text.substring(currentIndex));
+        SpannableString spannableString = new SpannableString(formattedText.toString().replace("\n*", "\n•"));
 
         for (int i = 0; i < endPositions.size(); i++) {
             spannableString.setSpan(new StyleSpan(Typeface.BOLD), startPositions.get(i), endPositions.get(i), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

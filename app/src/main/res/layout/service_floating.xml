@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:minWidth="360dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -73,11 +74,17 @@
 
 
             <LinearLayout
+                android:layout_weight="100"
                 android:layout_width="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp">
+
+                <Space
+                    android:layout_weight="2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -101,17 +108,34 @@
                     android:text="@string/header_2"
                     android:textSize="20sp" />
 
+                <Space
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"/>
+
+                <ImageButton
+                    android:id="@+id/restartBtn"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/fullscreen"
+                    android:src="@drawable/ic_restart"
+                    />
+
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@drawable/line_back" />
+                android:background="@color/g1" />
 
-            <ScrollView
+
+
+            <com.rando.factchecker2.MaxHeightScrollView
+                android:layout_weight="5"
                 android:id="@+id/messagesScroll"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
+                app:maxHeight="230dp"
                 android:layout_marginTop="5dp"
                 android:background="@color/transparent">
 
@@ -125,9 +149,19 @@
                     android:layout_marginVertical="0dp"
                     android:layout_marginHorizontal="10dp">
 
+                    <com.rando.factchecker2.GradientTextView
+                        android:id="@+id/greeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="Hello, User"
+                        android:textStyle="bold"
+                        android:textSize="30sp"/>
+
                 </LinearLayout>
 
-            </ScrollView>
+
+            </com.rando.factchecker2.MaxHeightScrollView>
 
 
 

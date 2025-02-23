@@ -3,4 +3,8 @@
     <string name="prompt_hint">Ask Gemini</string>
     <string name="header_1">Explanation</string>
     <string name="header_2">Gemini</string>
+    <string name="learn_more"><tt>Start Chatting</tt></string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">Home</string>
+    <string name="second_fragment_label">Conversation</string>
 </resources>

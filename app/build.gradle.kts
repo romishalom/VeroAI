@@ -29,6 +29,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -45,6 +48,8 @@ dependencies {
 
     // Required for streaming operations (to use `Publisher` from Guava Android)
     implementation(libs.reactive.streams)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

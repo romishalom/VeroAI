@@ -22,4 +22,12 @@
     <color name="grad1">#4784f2</color>
     <color name="grad2">#8061A8</color>
     <color name="grad3">#d56675</color>
+    <color name="blu1">#000423</color>
+    <color name="grn1">#4D8E4F</color>
+    <color name="red1">#8E4D4D</color>
+    <color name="blu2">#8A89DB</color>
+    <color name="blu1L">#242652</color>
+    <color name="blu1D">#000416</color>
+    <color name="blu1L2">#3A3D83</color>
+
 </resources>
