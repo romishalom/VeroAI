@@ -7,7 +7,8 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#cdcecd</color>
-    <color name="whitish">#87CDCECD</color>
+    <!--<color name="whitish">#87CDCECD</color>-->
+    <color name="whitish">#87B7B7C3</color>
     <color name="theme">#65B5D9</color>
     <color name="themeTwo">#2572B1</color>
     <color name="g1">#282a2c</color>
@@ -17,17 +18,28 @@
     <color name="g1lite">#3D4043</color>
     <color name="g1liter">#4E5256</color>
     <color name="transparent">#00000000</color>
-    <color name="transBack">#D5262626</color>
+    <!--<color name="transBack">#D5262626</color>-->
+    <color name="transBack">#DA3A3D4D</color>
+
     <color name="bubbleBack">#333537</color>
     <color name="grad1">#4784f2</color>
     <color name="grad2">#8061A8</color>
     <color name="grad3">#d56675</color>
-    <color name="blu1">#000423</color>
+    <!--<color name="blu1">#000423</color>-->
     <color name="grn1">#4D8E4F</color>
-    <color name="red1">#8E4D4D</color>
-    <color name="blu2">#8A89DB</color>
+    <color name="red1">#AF5353</color>
+    <color name="rng1">#A66033</color>
+    <color name="rng2">#af601a</color>
+    <color name="lblu1">#6B678C</color>
+    <!--<color name="blu2">#8A89DB</color>
     <color name="blu1L">#242652</color>
-    <color name="blu1D">#000416</color>
-    <color name="blu1L2">#3A3D83</color>
+    <color name="blu1D">#000414</color>
+    <color name="blu1L2">#3A3D83</color>-->
+    <color name="back">#000414</color>
+    <color name="backSelected">#24242F</color>
+    <color name="prime">#8A89DB</color>
+    <color name="second">#3A3D83</color>
+    <color name="third">#15192C</color>
+    <color name="fourth">#262B47</color>
 
 </resources>

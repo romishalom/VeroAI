@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.rando.factchecker2.databinding.FragmentFirstBinding;
@@ -26,6 +28,13 @@ public class HomeFragment extends Fragment {
     private FragmentFirstBinding binding;
     private ImageButton nextBtn;
     private AlertDialog dialog;
+    private Intent activityIntent;
+
+    private HomeViewModel homeViewModel;
+    private ActionsViewModel actionsViewModel;
+    private boolean fistOpening = true;
+
+    private PromptAction promptAction = PromptAction.NOTHING;
 
     @Override
     public View onCreateView(
@@ -40,15 +49,35 @@ public class HomeFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        activityIntent = requireActivity().getIntent();
+        homeViewModel = new ViewModelProvider(requireActivity()).get(HomeViewModel.class);
+        actionsViewModel = new ViewModelProvider(requireActivity()).get(ActionsViewModel.class);
+        Typewriter typewriter = new Typewriter(binding.greeting);
+        typewriter.setDelay(50);
+        typewriter.animateText("Hello there, how can I help you today?");
+        binding.promptBox.setText(activityIntent.getStringExtra("etText"));
+        binding.promptBox.requestFocus();
         binding.sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavHostFragment.findNavController(HomeFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                if (!binding.promptBox.getText().toString().isEmpty()) {
+                    String prompt = binding.promptBox.getText().toString();
+                    if (prompt.startsWith("@Summarize ")) {
+                        promptAction = PromptAction.SUMMARIZE;
+                    } else if (prompt.startsWith("@TrueFalse ")) {
+                        promptAction = PromptAction.TRUEFALSE;
+                    }
+                    homeViewModel.setPrompt(prompt);
+                    actionsViewModel.setAction(promptAction);
+                    binding.promptBox.setText("");
+                    NavHostFragment.findNavController(HomeFragment.this)
+                            .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                    promptAction = PromptAction.NOTHING;
+                }
             }
         });
 
-        binding.fab.setOnClickListener(new View.OnClickListener() {
+        binding.overlayActionBtn.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isMyServiceRunning()) {
@@ -58,7 +87,6 @@ public class HomeFragment extends Fragment {
                 if (checkOverlayDisplayPermission()) {
                     // just Run service
                     getActivity().startService(new Intent(getActivity(), FloatingService.class));
-
                     Toast.makeText(getActivity(), "Starting Overlay", Toast.LENGTH_LONG).show();
                     getActivity().finish();
 
@@ -68,13 +96,55 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+
+        binding.summarizeActionBtn.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (promptAction == PromptAction.SUMMARIZE) {
+                    binding.summarizeActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.back));
+                    promptAction = PromptAction.NOTHING;
+                    Log.d("test", promptAction.toString());
+                } else {
+                    if (promptAction == PromptAction.TRUEFALSE) {
+                        binding.truefalseActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.back));
+                    }
+                    binding.summarizeActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.selected_action));
+                    promptAction = PromptAction.SUMMARIZE;
+                    Log.d("test", promptAction.toString());
+                }
+            }
+        });
+
+        binding.truefalseActionBtn.getRoot().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (promptAction == PromptAction.TRUEFALSE) {
+                    binding.truefalseActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.back));
+                    promptAction = PromptAction.NOTHING;
+                    Log.d("test", promptAction.toString());
+                } else {
+                    if (promptAction == PromptAction.SUMMARIZE) {
+                        binding.summarizeActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.back));
+                    }
+                    binding.truefalseActionBtn.getRoot().setBackground(getResources().getDrawable(R.drawable.selected_action));
+                    promptAction = PromptAction.TRUEFALSE;
+                    Log.d("test", promptAction.toString());
+                }
+            }
+        });
+
+        String responseExtra = activityIntent.getStringExtra("responseExtra");
+        if (responseExtra != null && fistOpening) {
+            NavHostFragment.findNavController(HomeFragment.this)
+                    .navigate(R.id.action_FirstFragment_to_SecondFragment);
+            homeViewModel.setResponse(responseExtra);
+            actionsViewModel.setAction(PromptAction.NOTHING);
+            fistOpening = false;
+        }
+
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+
 
 
     private boolean isMyServiceRunning() {

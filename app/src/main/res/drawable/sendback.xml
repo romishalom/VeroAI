@@ -6,7 +6,7 @@
     android:viewportWidth="0"
     android:viewportHeight="0">
 
-    <solid android:color="@color/blu1L" />
+    <solid android:color="@color/fourth" />
 
     <corners android:radius="35dp"/>
 

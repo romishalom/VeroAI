@@ -4,20 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blu1"
+    android:background="@color/back"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".HomeFragment">
 
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginTop="10dp"
-        app:srcCompat="@drawable/ic_overlay" />
+        android:backgroundTint="@color/prime"
+        app:tint="@color/third"
+        app:srcCompat="@drawable/ic_overlay" />-->
 
 
     <LinearLayout
@@ -32,13 +35,59 @@
         android:paddingTop="5dp">
 
         <com.rando.factchecker2.GradientTextView
+            android:gravity="center"
             android:id="@+id/greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="Hello, User"
+            android:text="Hello there, how can I help you today?"
             android:textSize="30sp"
             android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+        <include layout="@layout/action_truefalse"
+            android:id="@+id/truefalseActionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+
+        <include layout="@layout/action_overlay"
+            android:id="@+id/overlayActionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+        <include layout="@layout/action_summarize"
+            android:id="@+id/summarizeActionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+
+            <include layout="@layout/action_url"
+            android:id="@+id/urlActionBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -46,7 +95,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/search_back"
         android:gravity="center_vertical"
@@ -55,16 +104,19 @@
         android:paddingVertical="5dp">
 
         <EditText
+            android:paddingVertical="12dp"
+            android:focusableInTouchMode="true"
             android:id="@+id/promptBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="25dp"
             android:layout_weight="100"
             android:background="@color/transparent"
             android:hint="@string/prompt_hint"
             android:inputType="textMultiLine"
             android:textColor="@color/white"
             android:textColorHint="@color/whitish" />
+
 
 
         <Space
@@ -74,8 +126,8 @@
 
         <ImageButton
             android:id="@+id/sendBtn"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/sendback"
             android:src="@drawable/ic_send" />
 

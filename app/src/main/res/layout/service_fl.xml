@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:minWidth="360dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/line_back"
+    android:gravity="center_horizontal"
+    android:layout_gravity="top"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginTop="10dp"
+    android:padding="2dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/fl_back"
+        android:gravity="center_horizontal"
+        android:layout_gravity="center"
+        android:paddingHorizontal="18dp">
+
+
+        <LinearLayout
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+
+            <ImageButton
+                android:id="@+id/closeImgBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_close" />
+
+            <ImageButton
+                android:id="@+id/minimizeImgBtn"
+                android:layout_width="30dp"
+                android:layout_marginStart="10dp"
+                android:layout_height="30dp"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_minimize" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+
+            <com.rando.factchecker2.MaxHeightScrollView
+                android:layout_weight="5"
+                android:id="@+id/responseScroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:maxHeight="230dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/transparent">
+
+                <LinearLayout
+                    android:paddingTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="10dp"
+                    android:orientation="vertical"
+                    android:id="@+id/responseLL"
+                    android:layout_marginVertical="0dp"
+                    android:layout_marginHorizontal="10dp">
+
+                    <TextView
+                        android:id="@+id/explo"
+                        android:textColor="@color/white"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+
+
+
+            </com.rando.factchecker2.MaxHeightScrollView>
+
+
+            <LinearLayout
+                android:gravity="end"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginHorizontal="10dp">
+
+                <LinearLayout
+                    android:id="@+id/nextLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:background="@drawable/line_back">
+
+                    <TextView
+                        android:layout_marginStart="15dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="3dp"
+                        android:text="@string/learn_more"
+                        android:textSize="15sp"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF" />
+                <ImageButton
+                    android:id="@+id/nextButton"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_next"
+                    android:layout_marginEnd="5dp"
+                    android:background="@color/transparent"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -32,6 +33,9 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
 dependencies {
@@ -43,6 +47,10 @@ dependencies {
     // add the dependency for the Google AI client SDK for Android
     implementation(libs.generativeai)
 
+    //Web stuff
+    implementation(libs.okhttp)
+    implementation(libs.jsoup)
+
     // Required for one-shot operations (to use `ListenableFuture` from Reactive Streams)
     implementation(libs.guava)
 
@@ -50,6 +58,7 @@ dependencies {
     implementation(libs.reactive.streams)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+    implementation(libs.core.ktx)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

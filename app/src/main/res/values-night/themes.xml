@@ -3,5 +3,12 @@
     <style name="Base.Theme.FactChecker2" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+
+        <item name="colorPrimary">@color/prime</item>
+        <item name="colorOnPrimary">@color/back</item>
+        <item name="colorSecondary">@color/second</item>
+        <item name="colorOnSecondary">@color/back</item>
+        <item name="colorTertiary">@color/third</item>
+        <item name="colorOnTertiary">@color/back</item>
     </style>
 </resources>

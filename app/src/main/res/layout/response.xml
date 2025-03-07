@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="10dp"
+    android:paddingHorizontal="10dp"
     android:layout_marginTop="15dp"
+    android:paddingVertical="30dp"
     android:background="@color/transparent">
 
     <TextView
@@ -12,31 +13,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="hello world"/>
+        android:text="Hello world"
+        android:textIsSelectable="true"
+        android:textSize="17sp"/>
+
+
 
     <LinearLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageButton
+            android:layout_marginStart="20dp"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="25dp"
             android:src="@drawable/ic_copy"
             android:id="@+id/copy"
             android:background="@color/transparent"/>
         <ImageButton
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="30dp"
             android:src="@drawable/ic_share"
             android:id="@+id/share"
             android:background="@color/transparent"/>
         <ImageButton
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="25dp"
             android:src="@drawable/ic_search"
             android:id="@+id/search"
             android:background="@color/transparent"/>
@@ -44,7 +50,7 @@
         <ImageButton
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginEnd="25dp"
             android:src="@drawable/ic_action_name"
             android:id="@+id/insert"
             android:background="@color/transparent"/>

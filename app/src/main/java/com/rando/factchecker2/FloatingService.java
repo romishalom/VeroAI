@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
+import android.text.Html;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,6 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelStore;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
@@ -55,6 +57,10 @@ public class FloatingService extends Service  {
     private int screenX;
     private ProgressBar progressBar;
     private LinearLayout responseLayout;
+    public boolean isRecording;
+    private String responseString;
+
+    private GeminiClient floatingGeminiClient;
 
     private boolean firstSend = true;
 
@@ -174,43 +180,36 @@ public class FloatingService extends Service  {
             public void onClick(View v) {
                 Intent toHome = new Intent(FloatingService.this, HomeActivity.class);
                 toHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                toHome.putExtra("responseExtra", responseString);
                 startActivity(toHome);
+                System.out.println("Nexting");
                 stopAll();
             }
         });
 
 
-        sendPromptAndSetResults("Write a poem.");
-
-    }
-
-    public void sendPromptAndSetResults(String prompt) {
-        GenerativeModel gm = new GenerativeModel("gemini-pro" /*Don't change!!!*/, "AIzaSyAJblAu9zBleYMGovgNeT2CtoqfolZImT4");
-        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
-        Content content = new Content.Builder()
-                .addText(prompt)
-                .build();
-
-        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            floatingGeminiClient = new GeminiClient(new GeminiClientInterface() {
                 @Override
-                public void onSuccess(GenerateContentResponse result) {
-                    String resultText = result.getText();
-                    Log.d("Response",resultText);
+                public void onSuccess(String response) {
+                    Log.d("Response",response);
                     responseLayout.removeView(progressBar);
-                    TextFormatter.formatText(resultText , explanationTextView);
-                }
+                    explanationTextView.setText(Html.fromHtml(TextFormatter.formatText(response)));
+                    responseString = response;                }
                 @Override
-                public void onFailure(Throwable t) {
+                public void onFailure(String error) {
                     responseLayout.removeView(progressBar);
-                    TextFormatter.formatText(t.toString() , explanationTextView);
+                    explanationTextView.setText(error);
+                    explanationTextView.setTextColor(getResources().getColor(R.color.red1));
                 }
-
             }, this.getMainExecutor());
         }
+
+        floatingGeminiClient.sendPromptAndSetResults("Write a poem");
+
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void startMinimized() {
         LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         ViewGroup minimizedV = (ViewGroup) inflater.inflate(R.layout.minimized, null);
@@ -231,6 +230,31 @@ public class FloatingService extends Service  {
                 windowManager.addView(floatView, floatWindowLayoutParam);
             }
         });
+        //stopRec();
+        isRecording = false;
+        ImageButton recordBtn = minimizedV.findViewById(R.id.recordBtn);
+        recordBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isRecording) {
+                    //startRec();
+                    recordBtn.setBackground(getResources().getDrawable(R.drawable.start_recording_back));
+                    recordBtn.setImageResource(R.drawable.ic_start_rec);
+                    isRecording = false;
+                    //stopRec();
+                    windowManager.removeView(minimizedV);
+                    windowManager.addView(floatView, floatWindowLayoutParam);
+                    //floatingGeminiClient.sendPromptAndSetResults( checkString + Transcriber.transcribeCurrentFile());
+                } else {
+
+
+                    recordBtn.setBackground(getResources().getDrawable(R.drawable.stop_recording_back));
+                    recordBtn.setImageResource(R.drawable.ic_stop_rec);
+                    isRecording = true;
+                }
+            }
+
+        });
 
         minimizedV.findViewById(R.id.openImgBtn).setOnTouchListener(new View.OnTouchListener() {
             final WindowManager.LayoutParams minimizedParamsUpdated = minimizedParams;
@@ -250,7 +274,7 @@ public class FloatingService extends Service  {
                         x = minimizedParamsUpdated.x;
                         y = minimizedParamsUpdated.y;
 
-                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-100 ) {
+                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-200 ) {
                             minimizedV.setBackground(getResources().getDrawable(R.drawable.minimied_back_2));
                         } else {
                             minimizedV.setBackground(getResources().getDrawable(R.drawable.minimized_back));
@@ -275,7 +299,73 @@ public class FloatingService extends Service  {
                         minimizedParamsUpdated.x = (int) ((x + event.getRawX()) - px);
                         minimizedParamsUpdated.y = (int) ((y + event.getRawY()) - py);
 
-                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-100 ) {
+                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-200 ) {
+                            minimizedV.setBackground(getResources().getDrawable(R.drawable.minimied_back_2));
+                        } else {
+                            minimizedV.setBackground(getResources().getDrawable(R.drawable.minimized_back));
+                        }
+
+                        if (minimizedParamsUpdated.x>screenMidx) {
+                            minimizedV.setScaleX(-1);
+                        } else {
+                            minimizedV.setScaleX(1);
+                        }
+
+
+
+                        // updated parameter is applied to the WindowManager
+                        windowManager.updateViewLayout(minimizedV, minimizedParamsUpdated);
+                        break;
+                }
+                return false;
+            }
+
+        });
+
+        recordBtn.setOnTouchListener(new View.OnTouchListener() {
+            final WindowManager.LayoutParams minimizedParamsUpdated = minimizedParams;
+            double x;
+            double y;
+            double px;
+            double py;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch (event.getAction()) {
+                    // When the window will be touched,
+                    // the x and y position of that position
+                    // will be retrieved
+                    case MotionEvent.ACTION_DOWN:
+                        x = minimizedParamsUpdated.x;
+                        y = minimizedParamsUpdated.y;
+
+                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-200 ) {
+                            minimizedV.setBackground(getResources().getDrawable(R.drawable.minimied_back_2));
+                        } else {
+                            minimizedV.setBackground(getResources().getDrawable(R.drawable.minimized_back));
+                        }
+
+                        if (minimizedParamsUpdated.x>screenMidx) {
+                            minimizedV.setScaleX(-1);
+                        } else {
+                            minimizedV.setScaleX(1);
+                        }
+                        // returns the original raw X
+                        // coordinate of this event
+                        px = event.getRawX();
+
+                        // returns the original raw Y
+                        // coordinate of this event
+                        py = event.getRawY();
+                        break;
+                    // When the window will be dragged around,
+                    // it will update the x, y of the Window Layout Parameter
+                    case MotionEvent.ACTION_MOVE:
+                        minimizedParamsUpdated.x = (int) ((x + event.getRawX()) - px);
+                        minimizedParamsUpdated.y = (int) ((y + event.getRawY()) - py);
+
+                        if (minimizedParamsUpdated.x <= 0 || minimizedParamsUpdated.x >= screenX-200 ) {
                             minimizedV.setBackground(getResources().getDrawable(R.drawable.minimied_back_2));
                         } else {
                             minimizedV.setBackground(getResources().getDrawable(R.drawable.minimized_back));

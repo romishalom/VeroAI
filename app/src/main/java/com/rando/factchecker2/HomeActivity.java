@@ -1,22 +1,12 @@
 package com.rando.factchecker2;
 
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.provider.Settings;
-import android.view.View;
-import android.widget.Toast;
-
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -30,6 +20,8 @@ public class HomeActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityHomeBinding binding;
+    private HomeViewModel homeViewModel;
+    private ActionsViewModel actionsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +29,23 @@ public class HomeActivity extends AppCompatActivity {
 
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.toolbar);
+        homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+
+
+
+        /*Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println(WebContentHelper.getWebContent("https://en.wikipedia.org/wiki/World_War_I"));
+                } catch (Exception e) {
+                    Log.e("WebContentHelperError", e.getMessage());
+                }
+            }
+        });
+        thread.start();*/
+
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_home);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
@@ -51,6 +58,11 @@ public class HomeActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
+
 
 
 
