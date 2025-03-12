@@ -1,7 +1,6 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.rando.factchecker2.R;
 import com.rando.factchecker2.databinding.ActivityHomeBinding;
 
 public class HomeActivity extends AppCompatActivity {

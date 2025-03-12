@@ -1,10 +1,12 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.style;
 
 import android.content.Context;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 import android.util.AttributeSet;
 import androidx.appcompat.widget.AppCompatTextView; // Or just TextView if not using AppCompat
+
+import com.rando.factchecker2.R;
 
 public class GradientTextView extends AppCompatTextView {
 

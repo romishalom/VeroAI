@@ -1,7 +1,9 @@
 [versions]
 agp = "8.8.0"
+assemblyaiJava = "1.0.10"
 generativeai = "0.2.0"
 googleCloudVertexai = "LATEST_VERSION"
+gson = "2.10.1"
 guava = "31.0.1-android"
 jsoup = "1.17.2"
 jsoupVersion = "1.15.4"
@@ -16,13 +18,17 @@ okhttp = "4.12.0"
 reactiveStreams = "1.0.4"
 navigationFragment = "2.8.6"
 navigationUi = "2.8.6"
+retrofit = "2.9.0"
 typewriterTextviewVersion = "v1.3"
 kotlin = "1.9.24"
 coreKtx = "1.15.0"
 
 [libraries]
+assemblyai-java = { module = "com.assemblyai:assemblyai-java", version.ref = "assemblyaiJava" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
 google-cloud-vertexai = { module = "com.google.cloud:google-cloud-vertexai", version.ref = "googleCloudVertexai" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 jsoup-v1154 = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
@@ -39,6 +45,7 @@ reactive-streams = { module = "org.reactivestreams:reactive-streams", version.re
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

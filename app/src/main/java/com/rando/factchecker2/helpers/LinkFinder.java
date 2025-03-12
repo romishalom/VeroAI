@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.helpers;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

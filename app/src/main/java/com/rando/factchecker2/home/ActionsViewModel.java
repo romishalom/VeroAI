@@ -1,9 +1,7 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-
-import java.util.List;
 
 public class ActionsViewModel extends ViewModel {
 

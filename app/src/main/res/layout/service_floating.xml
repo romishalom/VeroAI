@@ -101,7 +101,7 @@
                     android:textSize="20sp"
                     android:textColor="@color/white"/>
 
-                <com.rando.factchecker2.GradientTextView
+                <com.rando.factchecker2.style.GradientTextView
                     android:id="@+id/Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
 
 
 
-            <com.rando.factchecker2.MaxHeightScrollView
+            <com.rando.factchecker2.style.MaxHeightScrollView
                 android:layout_weight="5"
                 android:id="@+id/messagesScroll"
                 android:layout_width="match_parent"
@@ -149,7 +149,7 @@
                     android:layout_marginVertical="0dp"
                     android:layout_marginHorizontal="10dp">
 
-                    <com.rando.factchecker2.GradientTextView
+                    <com.rando.factchecker2.style.GradientTextView
                         android:id="@+id/greeting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                 </LinearLayout>
 
 
-            </com.rando.factchecker2.MaxHeightScrollView>
+            </com.rando.factchecker2.style.MaxHeightScrollView>
 
 
 

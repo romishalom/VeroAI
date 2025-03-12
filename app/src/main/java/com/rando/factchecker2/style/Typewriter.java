@@ -1,8 +1,7 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.style;
 
 import android.os.Handler;
 import android.text.Html;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class Typewriter {

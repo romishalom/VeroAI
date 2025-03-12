@@ -1,13 +1,9 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
-import android.content.ClipData;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 public class ShareHandlerActivity extends AppCompatActivity {
 

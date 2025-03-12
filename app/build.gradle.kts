@@ -44,6 +44,11 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    //Transcript stuff
+    implementation(libs.assemblyai.java)
+
+
     // add the dependency for the Google AI client SDK for Android
     implementation(libs.generativeai)
 

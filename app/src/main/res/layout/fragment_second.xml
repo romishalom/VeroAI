@@ -7,7 +7,7 @@
     android:background="@color/back"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    tools:context=".HomeFragment">
+    tools:context=".home.HomeFragment">
 
 
     <ScrollView

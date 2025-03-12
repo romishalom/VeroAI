@@ -1,16 +1,5 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.style;
 
-import android.graphics.Typeface;
-import android.text.Editable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
-import android.text.style.StyleSpan;
-import android.widget.EditText;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

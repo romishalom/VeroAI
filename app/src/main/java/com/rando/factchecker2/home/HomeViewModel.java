@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

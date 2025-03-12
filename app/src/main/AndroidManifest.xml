@@ -2,8 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.DETECT_SCREEN_RECORDING" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +22,7 @@
         android:theme="@style/Theme.FactChecker2"
         tools:targetApi="31">
         <activity
-            android:name=".ShareHandlerActivity"
+            android:name=".home.ShareHandlerActivity"
             android:label="New Chat"
             android:exported="true">
             <intent-filter>
@@ -38,7 +44,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".home.HomeActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible">
             <intent-filter>
@@ -47,8 +53,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".floatingService.audio.RecordActivity"
+            android:exported="true"/>
 
-        <service android:name=".FloatingService" />
+        <service android:name=".floatingService.FloatingService" />
+        <service
+            android:name=".floatingService.audio.AudioCaptureService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection"/>
     </application>
 
 </manifest>

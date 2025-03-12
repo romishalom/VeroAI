@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -21,6 +21,9 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.rando.factchecker2.floatingService.FloatingService;
+import com.rando.factchecker2.R;
+import com.rando.factchecker2.style.Typewriter;
 import com.rando.factchecker2.databinding.FragmentFirstBinding;
 
 public class HomeFragment extends Fragment {

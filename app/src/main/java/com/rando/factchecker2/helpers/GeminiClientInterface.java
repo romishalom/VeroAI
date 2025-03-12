@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.helpers;
 
 public interface GeminiClientInterface {
     public void onSuccess(String response);

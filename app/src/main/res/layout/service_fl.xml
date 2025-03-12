@@ -60,7 +60,7 @@
             android:paddingHorizontal="10dp">
 
 
-            <com.rando.factchecker2.MaxHeightScrollView
+            <com.rando.factchecker2.style.MaxHeightScrollView
                 android:layout_weight="5"
                 android:id="@+id/responseScroll"
                 android:layout_width="match_parent"
@@ -92,7 +92,7 @@
 
 
 
-            </com.rando.factchecker2.MaxHeightScrollView>
+            </com.rando.factchecker2.style.MaxHeightScrollView>
 
 
             <LinearLayout

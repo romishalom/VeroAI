@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.helpers;
 
 import android.os.AsyncTask;
 import android.util.Log;

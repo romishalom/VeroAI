@@ -1,14 +1,11 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.helpers;
 
-import android.graphics.Color;
 import android.os.Build;
-import android.util.Log;
 
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
 import com.google.ai.client.generativeai.type.GenerateContentResponse;
-import com.google.ai.client.generativeai.type.Part;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -32,7 +29,7 @@ public class GeminiClient {
         this.chatHistory = new ArrayList<>();
     }
 
-    public void setUserNmae(String name) {
+    public void setUserName(String name) {
         Content.Builder contentB = new Content.Builder().addText("Hi, my name is "+ name);
         contentB.setRole("user");
         this.chatHistory.add(contentB.build());

@@ -10,11 +10,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+
+import com.rando.factchecker2.floatingService.FloatingService;
 
 public class MainActivity extends AppCompatActivity {
 

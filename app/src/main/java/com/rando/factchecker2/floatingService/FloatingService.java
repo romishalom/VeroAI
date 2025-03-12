@@ -1,13 +1,8 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.floatingService;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
 import android.app.Service;
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.IBinder;
@@ -20,34 +15,32 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.Space;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
+import androidx.annotation.RequiresApi;
 import androidx.lifecycle.ViewModelStore;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.ai.client.generativeai.GenerativeModel;
-import com.google.ai.client.generativeai.java.GenerativeModelFutures;
-import com.google.ai.client.generativeai.type.Content;
-import com.google.ai.client.generativeai.type.GenerateContentResponse;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import com.rando.factchecker2.floatingService.audio.AudioCaptureService;
+import com.rando.factchecker2.floatingService.audio.RecordActivity;
+import com.rando.factchecker2.helpers.GeminiClient;
+import com.rando.factchecker2.helpers.GeminiClientInterface;
+import com.rando.factchecker2.R;
+import com.rando.factchecker2.style.TextFormatter;
+import com.rando.factchecker2.home.HomeActivity;
+
 
 public class FloatingService extends Service  {
 
     private ViewGroup floatView;
     private int LAYOUT_TYPE;
     private WindowManager.LayoutParams floatWindowLayoutParam;
+    private WindowManager.LayoutParams minimizedParams;
+    private LayoutInflater inflater;
     private WindowManager windowManager;
     private ImageButton minimizeBtn;
     private ImageButton closeBtn;
@@ -59,15 +52,36 @@ public class FloatingService extends Service  {
     private LinearLayout responseLayout;
     public boolean isRecording;
     private String responseString;
+    private View minimizedV;
 
     private GeminiClient floatingGeminiClient;
-
-    private boolean firstSend = true;
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            String trans = intent.getStringExtra("transcriptExtra");
+            if (trans != null) {
+                System.out.println("AHHHHHHHHHHHHHHHHHHHHHH");
+                System.out.println(trans);
+                try {
+                    windowManager.removeView(minimizedV);
+                } catch (Exception e) {
+
+                }
+                windowManager.addView(floatView, floatWindowLayoutParam);
+                floatingGeminiClient.sendPromptAndSetResults("Check if the following text is true or false: " + trans);
+            } else {
+                startMinimized();
+            }
+        }
+
+        return START_STICKY;
     }
 
     @Override
@@ -80,15 +94,10 @@ public class FloatingService extends Service  {
 
         // A LayoutInflater instance is created to retrieve the
         // LayoutInflater for the floating_layout xml
-        LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 
         // inflate a new view hierarchy from the floating_layout xml
-        floatView = (ViewGroup) inflater.inflate(R.layout.service_fl, null);
-        minimizeBtn = floatView.findViewById(R.id.minimizeImgBtn);
-        closeBtn = floatView.findViewById(R.id.closeImgBtn);
-        nextBtn = floatView.findViewById(R.id.nextLL);
-        explanationTextView = floatView.findViewById(R.id.explo);
-        responseLayout = floatView.findViewById(R.id.responseLL);
+        minimizedV = (ViewGroup) inflater.inflate(R.layout.minimized, null);
 
 
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -102,6 +111,23 @@ public class FloatingService extends Service  {
             LAYOUT_TYPE = WindowManager.LayoutParams.TYPE_TOAST;
         }
 
+        initMaximized();
+        initMinimized();
+
+
+
+        //floatingGeminiClient.sendPromptAndSetResults("Write a poem");
+
+    }
+
+    public void initMaximized() {
+        floatView = (ViewGroup) inflater.inflate(R.layout.service_fl, null);
+        minimizeBtn = floatView.findViewById(R.id.minimizeImgBtn);
+        closeBtn = floatView.findViewById(R.id.closeImgBtn);
+        nextBtn = floatView.findViewById(R.id.nextLL);
+        explanationTextView = floatView.findViewById(R.id.explo);
+        responseLayout = floatView.findViewById(R.id.responseLL);
+
         floatWindowLayoutParam = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -114,7 +140,6 @@ public class FloatingService extends Service  {
 
         // The ViewGroup that inflates the floating_layout.xml is
         // added to the WindowManager with all the parameters
-        windowManager.addView(floatView, floatWindowLayoutParam);
 
         // Another feature of the floating window is, the window is movable.
         // The window can be moved at any position on the screen.
@@ -204,16 +229,26 @@ public class FloatingService extends Service  {
                 }
             }, this.getMainExecutor());
         }
+    }
 
-        floatingGeminiClient.sendPromptAndSetResults("Write a poem");
+    public void startMaximized(String response) {
+        removeViewFromWindow(minimizedV);
+        windowManager.addView(floatView, floatWindowLayoutParam);
+        try {
+            floatingGeminiClient.sendPromptAndSetResults(response);
+        } catch (Exception e) { }
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     public void startMinimized() {
-        LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-        ViewGroup minimizedV = (ViewGroup) inflater.inflate(R.layout.minimized, null);
-        WindowManager.LayoutParams minimizedParams = new WindowManager.LayoutParams(
+        removeViewFromWindow(floatView);
+        windowManager.addView(minimizedV, minimizedParams);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void initMinimized() {
+        minimizedV = (ViewGroup) inflater.inflate(R.layout.minimized, null);
+        minimizedParams = new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 LAYOUT_TYPE,
@@ -221,12 +256,12 @@ public class FloatingService extends Service  {
                 PixelFormat.TRANSLUCENT
         );
         minimizedParams.gravity = Gravity.TOP | Gravity.START;
-        windowManager.removeView(floatView);
-        windowManager.addView(minimizedV, minimizedParams);
         minimizedV.findViewById(R.id.openImgBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                windowManager.removeView(minimizedV);
+                try {
+                    windowManager.removeView(minimizedV);
+                } catch (Exception e) {}
                 windowManager.addView(floatView, floatWindowLayoutParam);
             }
         });
@@ -237,20 +272,21 @@ public class FloatingService extends Service  {
             @Override
             public void onClick(View v) {
                 if (isRecording) {
-                    //startRec();
                     recordBtn.setBackground(getResources().getDrawable(R.drawable.start_recording_back));
                     recordBtn.setImageResource(R.drawable.ic_start_rec);
                     isRecording = false;
-                    //stopRec();
-                    windowManager.removeView(minimizedV);
+                    stopRec();
+                    try {
+                        windowManager.removeView(minimizedV);
+                    } catch (Exception e) {}
                     windowManager.addView(floatView, floatWindowLayoutParam);
-                    //floatingGeminiClient.sendPromptAndSetResults( checkString + Transcriber.transcribeCurrentFile());
                 } else {
 
 
                     recordBtn.setBackground(getResources().getDrawable(R.drawable.stop_recording_back));
                     recordBtn.setImageResource(R.drawable.ic_stop_rec);
                     isRecording = true;
+                    startRec();
                 }
             }
 
@@ -392,19 +428,23 @@ public class FloatingService extends Service  {
 
     }
 
-    public boolean resetFocus() {
-        /*if (promptBox.hasFocus()) {
-            promptBox.clearFocus();
-            promptBox.setFocusable(false);
-            //windowManager.updateViewLayout(floatView, floatWindowLayoutParam);
-            System.out.println("fffff");
-            //promptBox.setFocusable(true);
-            //windowManager.removeView(floatView);
-            //windowManager.addView(floatView, floatWindowLayoutParam);
-
-            return true;
-        } return false;*/ return false;
+    public void removeViewFromWindow(View view) {
+        try {
+            windowManager.removeView(view);
+        } catch (Exception e) {}
     }
+
+    public void startRec() {
+        System.out.println("Starting to rec");
+        startActivity(new Intent(FloatingService.this, RecordActivity.class).setAction("Record:start").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    private void stopRec() {
+        System.out.println("Stopping to rec");
+        startActivity(new Intent(FloatingService.this, RecordActivity.class).setAction("Record:stop").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+
 
     // It is called when stopService()
     // method is called in MainActivity
@@ -413,7 +453,17 @@ public class FloatingService extends Service  {
         super.onDestroy();
         stopSelf();
         // Window is removed from the screen
-        windowManager.removeView(floatView);
+        try {
+            windowManager.removeView(floatView);
+        } catch (Exception e) {
+
+        }
+
+        try {
+            windowManager.removeView(minimizedV);
+        } catch (Exception e) {
+
+        }
     }
 
     public void stopAll() {

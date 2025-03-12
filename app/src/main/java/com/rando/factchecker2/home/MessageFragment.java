@@ -1,4 +1,4 @@
-package com.rando.factchecker2;
+package com.rando.factchecker2.home;
 
 import android.app.SearchManager;
 import android.content.ClipData;
@@ -25,7 +25,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.ai.client.generativeai.type.Content;
+import com.rando.factchecker2.helpers.GeminiClient;
+import com.rando.factchecker2.helpers.GeminiClientInterface;
+import com.rando.factchecker2.helpers.LinkFinder;
+import com.rando.factchecker2.R;
+import com.rando.factchecker2.style.TextFormatter;
+import com.rando.factchecker2.style.Typewriter;
+import com.rando.factchecker2.helpers.YoutubeTranscriptTask;
 import com.rando.factchecker2.databinding.FragmentSecondBinding;
 
 import java.util.Objects;
@@ -74,12 +80,15 @@ public class MessageFragment extends Fragment {
             @Override
             public void onSuccess(String response) {
                 if (isAdded()) {
-                    String resultText = response.replaceAll("Gemini", "Truthify");
-                    Log.d("Response", resultText);
+                    Log.d("Response", response);
                     promptBoxLayout.removeView(progressBar);
                     promptBoxLayout.addView(sendBtn);
                     promptBoxLayout.addView(spaceAfterPrompt);
-                    messages.addView(responseBubble(resultText, false, 5));
+                    int charsPerTime = 5;
+                    if (response.length() > 500) {
+                        charsPerTime = 20;
+                    }
+                    messages.addView(responseBubble(response, false, charsPerTime));
                 }
             }
             @Override
@@ -134,19 +143,27 @@ public class MessageFragment extends Fragment {
                     promptBoxLayout.addView(progressBar);
                     String link = LinkFinder.findLink(prompt);
                     System.out.println("link: "+link);
-                    if (link != null && link.startsWith("https://youtu")) {
-                        YoutubeTranscriptTask.TranscriptCallback transcriptCallback = new YoutubeTranscriptTask.TranscriptCallback() {
-                            @Override
-                            public void onTranscript(String transcript) {
+                    if (link != null) {
+                        String message;
+                        if (actionString(prompt).equals(link) || link.length()>= actionString(prompt).length()+2) {
+                            message = "Check if the following link is true or false and explain. The link: " + link;
+                        } else {
+                            message = prompt;
+                        }
+                        if (link.startsWith("https://youtu")) {
+                            YoutubeTranscriptTask.TranscriptCallback transcriptCallback = transcript -> {
                                 System.out.println(transcript);
-                                geminiClient.addChatToHistory("user", "Here is the transcript of the video from the given link: " + transcript);
-                                geminiClient.sendPromptAndSetResults(prompt);
+                                //geminiClient.addChatToHistory("user", "Here is the transcript of the video: " + transcript);
+                                geminiClient.sendPromptAndSetResults(actionString(message + " Here is the transcript of the video: " + transcript));
                                 actionsViewModel.setAction(PromptAction.NOTHING);
-                            }
-                        };
-                        // Replace with the YouTube URL
-                        YoutubeTranscriptTask task = new YoutubeTranscriptTask(transcriptCallback);
-                        task.execute(link);
+                            };
+                            // Replace with the YouTube URL
+                            YoutubeTranscriptTask task = new YoutubeTranscriptTask(transcriptCallback);
+                            task.execute(link);
+                        } else {
+                            geminiClient.sendPromptAndSetResults(actionString(message));
+                            actionsViewModel.setAction(PromptAction.NOTHING);
+                        }
                     } else {
                         geminiClient.sendPromptAndSetResults(actionString(prompt));
                         actionsViewModel.setAction(PromptAction.NOTHING);
@@ -184,12 +201,38 @@ public class MessageFragment extends Fragment {
         promptBoxLayout.removeView(spaceAfterPrompt);
         promptBoxLayout.removeView(sendBtn);
         promptBoxLayout.addView(progressBar);
-        geminiClient.sendPromptAndSetResults(actionString(prompt));
-        actionsViewModel.setAction(PromptAction.NOTHING);
+        String link = LinkFinder.findLink(prompt);
+        System.out.println("link: "+link);
+        if (link != null) {
+            String message;
+            if (actionString(prompt).equals(link) || link.length() >= actionString(prompt).length()+2) {
+                message = "Check if the following link is true or false and explain. The link: " + link;
+            } else {
+                message = prompt;
+            }
+            if (link.startsWith("https://youtu")) {
+                YoutubeTranscriptTask.TranscriptCallback transcriptCallback = transcript -> {
+                    System.out.println(transcript);
+                    //geminiClient.addChatToHistory("user", "Here is the transcript of the video: " + transcript);
+                    geminiClient.sendPromptAndSetResults(actionString(message + " Here is the transcript of the video: " + transcript));
+                    actionsViewModel.setAction(PromptAction.NOTHING);
+                };
+                // Replace with the YouTube URL
+                YoutubeTranscriptTask task = new YoutubeTranscriptTask(transcriptCallback);
+                task.execute(link);
+            }  else {
+                geminiClient.sendPromptAndSetResults(actionString(message));
+                actionsViewModel.setAction(PromptAction.NOTHING);
+            }
+        } else {
+            geminiClient.sendPromptAndSetResults(actionString(prompt));
+            actionsViewModel.setAction(PromptAction.NOTHING);
+        }
     }
 
     public void fistResponse(String response) {
         messages.addView(responseBubble(response, false, 20));
+        geminiClient.addChatToHistory("model", response);
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(promptBox.getWindowToken(), 0);
         promptBox.setText("");
@@ -323,7 +366,7 @@ public class MessageFragment extends Fragment {
         String res = text;
         switch (Objects.requireNonNull(actionsViewModel.getAction().getValue())) {
             case SUMMARIZE:
-                res = "Summarize the following statements or subjects: " + text.replaceFirst("@Summarize ", "");
+                res = "Summarize the following statements, subjects or contents: " + text.replaceFirst("@Summarize ", "");
                 break;
             case TRUEFALSE:
                 res = "Check if the following statement is true or false and explain: " + text.replaceFirst("@TrueFalse ", "");
