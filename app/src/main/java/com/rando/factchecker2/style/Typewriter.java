@@ -12,6 +12,7 @@ public class Typewriter {
     private long delay; // Delay between each character in milliseconds
     private int charPerTime;
     private Handler handler;
+    private boolean end = false;
     //private ScrollView scrollView;
 
 
@@ -45,6 +46,11 @@ public class Typewriter {
             if (charIndex <= text.length()) {
                 textView.setText(Html.fromHtml(text.substring(0, charIndex)));
                 charIndex+=charPerTime;
+            } else {
+                end = true;
+                textView.setText(Html.fromHtml(text));
+            }
+            if (!end) {
                 handler.postDelayed(characterAdder, delay);
             }
         }

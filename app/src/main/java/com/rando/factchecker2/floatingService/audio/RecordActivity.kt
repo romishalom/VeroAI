@@ -34,6 +34,7 @@ class RecordActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setFormat(PixelFormat.TRANSLUCENT)
+        window.setBackgroundDrawableResource(android.R.color.transparent);
         if (intent!= null && intent.action != null) {
             if (intent.action.equals("Record:start")) {
                 Log.d("RecordActivity", "onCreate: Record:start")
@@ -42,7 +43,7 @@ class RecordActivity : AppCompatActivity() {
             } else if (intent.action.equals("Record:stop")) {
                 Log.d("RecordActivity", "onCreate: Record:stop")
                 stopCapturing()
-                finish()
+                super.finish()
             } else if (intent.action.equals("Record:end")) {
                 Log.d("RecordActivity", "onCreate: Record:end")
                 finish()
